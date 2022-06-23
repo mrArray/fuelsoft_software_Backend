@@ -1,8 +1,9 @@
-const express = require("express");
+const express = require('express');
 const bodyParser = require("body-parser");
 const helmet = require("helmet");
 const path = require("path");
 const dotenv = require('dotenv');
+const mongoose = require('mongoose');
 
 const { connectAllDb } = require("./connectionManager");
 
@@ -14,6 +15,36 @@ app.set("port", PORT);
 // helmet for security purpose
 app.use(helmet());
 dotenv.config();
+
+
+
+
+
+
+
+//Connect to Database
+const mongoString = process.env.BASE_DB_URI;
+
+mongoose.connect(mongoString,{
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+    useFindAndModify: true,
+});
+const database = mongoose.connection;
+
+database.on('error', (error) => {
+    console.log(error)
+})
+
+database.once('connected', () => {
+    console.log('Database Connected');
+})
+
+
+
+// Parsing the body of the http middleware
+app.use(express.json());
 
 
 // Logging Http Request
@@ -41,3 +72,9 @@ router(app);
 app.listen(PORT, () => {
   console.log(`Express server started at port: ${PORT}`);
 });
+
+
+
+
+
+

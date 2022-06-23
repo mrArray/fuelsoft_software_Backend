@@ -6,6 +6,9 @@ const { initFuelStationDbConnection } = require("./db/fuelStation");
 
 const fuelStationService = require("./service/fuelStation");
 
+
+
+
 let connectionMap;
 let adminDbConnection;
 
@@ -62,6 +65,7 @@ const getAdminConnection = () => {
  * getNamespace from 'continuation-local-storage'. This will let us get / set any
  * information and binds the information to current request context.
  */
+
 const getConnection = () => {
   const nameSpace = getNamespace("unique context");
   const conn = nameSpace.get("connection");

@@ -12,6 +12,8 @@ const clientOption = {
 };
 
 // CONNECTION EVENTS
+
+
 // When successfully connected
 mongoose.connection.on("connected", () => {
   console.log("Mongoose default connection open");
@@ -59,6 +61,7 @@ const initAdminDbConnection = DB_URL => {
     console.log("initAdminDbConnection error", error);
   }
 };
+
 
 module.exports = {
   initAdminDbConnection

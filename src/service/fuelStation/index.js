@@ -14,15 +14,26 @@ const getAllFuelStations = async adminDbConnection => {
 const createFuelStation = async (adminDbConnection, body) => {
   try {
     const FuelStation = await adminDbConnection.model("FuelStation");
-    const name = body.name;
+    
+    const name = body.name.replace(/ /g, "");
+    const email = body.email;
+    const address = body.address;
+    const company = body.company;
+    
+    
+   
     const fuelStationPresent = await FuelStation.findOne({
       name
     });
     if (fuelStationPresent) {
-      throw new Error("FuelStation Already Present");
+      throw new Error("This FuelStation Already Exist");
     }
-    const newFuelStation = await new FuelStation({
+    const newFuelStation = await new FuelStation(
+      {
       name,
+      email,
+      address,
+      company,
       dbURI: `${process.env.BASE_DB_URI}/${name}`
     }).save();
     return newFuelStation;

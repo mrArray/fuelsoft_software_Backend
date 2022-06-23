@@ -12,7 +12,7 @@ let nameSpace = createNamespace("unique context");
  * Get the connection instance for the given fuelStation's name and set it to the current context.
  */
 const resolveFuelStation = (req, res, next) => {
-  const fuelStation = req.headers.fuelStation;
+  const fuelStation = req.headers.fuel_station;
 
   // console.log(fuelStation)
   if (!fuelStation) {

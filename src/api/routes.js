@@ -4,7 +4,7 @@ const v1Routes = require("./v1/routes");
 const router = app => {
   // Home API Route
   app.get("/", (req, res, next) => {
-    res.json({ body: "Basic multi-fuelStation application" });
+    res.json({ body: "fuelsoft tech & resources Ltd" });
   });
 
   const apiRoutes = express.Router();

@@ -5,7 +5,6 @@ const registerAdminSchema = new mongoose.Schema({
     name: {
         type: String,
         require: true,
-        min: 6,
         max: 255
 
     },

@@ -11,10 +11,9 @@ const fuelStationSchema = new Schema(
     email: {
       type: String,
       require: true,
-      min: 6,
       max: 255
     },
-    address: {
+    station_address: {
       type: String,
       unique: true,
       required: true
@@ -22,10 +21,10 @@ const fuelStationSchema = new Schema(
     company: {
       type: String,
       require: true,
-      min: 6,
       max: 255
 
     },
+    
     date: {
       type: Date,
       default: Date.now

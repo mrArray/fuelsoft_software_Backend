@@ -1,18 +1,7 @@
 // const bcrypt = require("bcryptjs");
 
-const getAllBranches = async fuelStationDbConnection => {
-  try {
-    const Branch = await fuelStationDbConnection.model("Branch");
-    const branches = await Branch.find({});
-    console.log("getAllBranchs branches", branches);
 
-    return branches;
-  } catch (error) {
-    console.log("getAllBranchs error", error);
-    throw error;
-  }
-};
-
+//create branch
 const createBranch = async (fuelStationDbConnection, body) => {
   try {
     // const Branch = require('../../dbModel/branch/schema');
@@ -28,8 +17,7 @@ const createBranch = async (fuelStationDbConnection, body) => {
     const tank_height=body.tank_height; 
     const priceboard_brand=body.priceboard_brand; 
     const attached_calib_chart=body.attached_calib_chart; 
-
-  
+    
     const branchPresent = await Branch.findOne({
         branch_address
     });
@@ -50,9 +38,62 @@ const createBranch = async (fuelStationDbConnection, body) => {
     }).save();
     return newBranch;
   } catch (error) {
-    console.log("createBranch error", error);
+    // console.log("createBranch error", error);
     throw error;
   }
 };
 
-module.exports = { getAllBranches, createBranch };
+//get all branches
+
+const getAllBranches = async fuelStationDbConnection => {
+  try {
+    const Branch = await fuelStationDbConnection.model("Branch");
+    const branches = await Branch.find({});
+    // console.log("getAllBranchs branches", branches);
+
+    return branches;
+  } catch (error) {
+    // console.log("getAllBranchs error", error);
+    throw error;
+  }
+};
+
+//get branch by id view
+
+const getBranchById = async fuelStationDbConnection => {
+  try {
+    const Branch = await fuelStationDbConnection.model("Branch");
+    return Branch;
+  } catch (error) {
+    // console.log("getAllBranchs error", error);
+    throw error;
+  }
+};
+
+//get branch by id delete
+
+const getDeleteById = async fuelStationDbConnection => {
+  try {
+    const Branch = await fuelStationDbConnection.model("Branch");
+    return Branch;
+  } catch (error) {
+    // console.log("getAllBranchs error", error);
+    throw error;
+  }
+};
+
+//get branch by id update
+
+const getUpdateById = async fuelStationDbConnection => {
+  try {
+    const Branch = await fuelStationDbConnection.model("Branch");
+    return Branch;
+  } catch (error) {
+    // console.log("getAllBranchs error", error);
+    throw error;
+  }
+};
+
+
+
+module.exports = { getAllBranches, createBranch,getBranchById,getDeleteById,getUpdateById };

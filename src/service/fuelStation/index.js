@@ -1,3 +1,6 @@
+const bcrypt = require("bcryptjs");
+// const {  loginValidation } = require('../../api/v1/validateAdmin');
+const Joi = require('@hapi/joi');
 
 const getAllFuelStations = async adminDbConnection => {
   try {
@@ -19,22 +22,24 @@ const createFuelStation = async (adminDbConnection, body) => {
     const email = body.email;
     const station_address = body.station_address;
     const company = body.company;
-    // const no_fuel_dispenser = body.no_fuel_dispenser;
-    // const type_of_fuel = body.type_of_fuel;
-    // const dispenser_brand = body.dispenser_brand;
-    // const mainboard_image = body.mainboard_image;
-    // const no_of_storage_tank = body.no_of_storage_tank;
-    // const type_of_storage = body.type_of_storage;
-    // const tank_height = body.tank_height;
-    // const priceboard_brand = body.priceboard_brand;
-    // const attached_calib_chart = body.attached_calib_chart;
+    const password = body.password;
+   
+    const salt = await bcrypt.genSalt(15);
+    const hashedPassword = await bcrypt.hash(password, salt);
 
-
+   
     const fuelStationPresent = await FuelStation.findOne({
       name
     });
     if (fuelStationPresent) {
       throw new Error("This FuelStation Already Exist");
+    }
+
+    const EmailPresent = await FuelStation.findOne({
+      email
+    });
+    if (EmailPresent) {
+      throw new Error("This Email Already Exist");
     }
     const newFuelStation = await new FuelStation(
       {
@@ -42,15 +47,7 @@ const createFuelStation = async (adminDbConnection, body) => {
         email,
         station_address,
         company,
-        // no_fuel_dispenser,
-        // type_of_fuel,
-        // dispenser_brand,
-        // mainboard_image,
-        // no_of_storage_tank,
-        // type_of_storage,
-        // tank_height,
-        // priceboard_brand,
-        // attached_calib_chart,
+        password: hashedPassword,
         dbURI: `${process.env.BASE_DB_URI}/${name}`
       }).save();
     return newFuelStation;
@@ -60,6 +57,54 @@ const createFuelStation = async (adminDbConnection, body) => {
   }
 };
 
-module.exports = { getAllFuelStations, createFuelStation };
+const loginFuelStations = async (adminDbConnection, body) => {
+  try {
+    const FuelStation = await adminDbConnection.model("FuelStation");
+    const password = await body.password;
+    const email = body.email;
+    
+    //check if  fuelstation   exist in the database
+    const fuelstation = await FuelStation.findOne({ email: email });
+
+    if (!fuelstation) throw new Error("incorrect credentials provided");
+
+    //validate
+    const { error } = validate(body);
+
+    if (error) throw new Error({
+      status: 'ERROR',
+      message: error.details[0].message,
+    });
+
+
+    //check users password
+
+    const fuelstationPassword = await bcrypt.compare(password, fuelstation.password)
+    if (!fuelstationPassword) throw new Error("incorrect credentials provided");
+
+    function validate(req) {
+      
+      const schema = Joi.object({
+        email: Joi.string()
+            .min(6)
+            .required()
+            .email(),
+        password: Joi.string()
+            .min(6)
+            .required()
+    });
+  
+      return schema.validate(req);
+  }
+    
+    return body;
+
+
+  } catch (error) {
+    console.log("createUser error", error);
+    throw error;
+  }
+};
+module.exports = { getAllFuelStations, createFuelStation ,loginFuelStations};
 
 

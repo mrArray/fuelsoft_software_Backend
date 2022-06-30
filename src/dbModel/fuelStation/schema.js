@@ -6,22 +6,27 @@ const fuelStationSchema = new Schema(
     name: {
       type: String,
       unique: true,
-      required: true
+      required: true,
     },
     email: {
       type: String,
-      require: true,
+      required: true,
       max: 255
     },
     station_address: {
       type: String,
       unique: true,
-      required: true
+      required: true,
     },
     company: {
       type: String,
-      require: true,
-      max: 255
+      max: 255,
+      required: true,
+
+    },
+    password: {
+      type: String,
+      required: true,
 
     },
     

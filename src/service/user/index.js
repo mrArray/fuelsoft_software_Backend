@@ -1,6 +1,6 @@
 const bcrypt = require("bcryptjs");
-const jwt = require('jsonwebtoken');
-const { registrationValidation, loginValidation } = require('../../api/v1/validateAdmin');
+// const {  loginValidation } = require('../../api/v1/validateAdmin');
+const Joi = require('@hapi/joi');
 
 const getAllUsers = async fuelStationDbConnection => {
   try {
@@ -29,7 +29,7 @@ const loginUser = async (fuelStationDbConnection, body) => {
     if (!user) throw new Error("incorrect credentials provided");
 
     //validate
-    const { error } = loginValidation(body);
+    const { error } = validate(body);
 
     if (error) throw new Error({
       status: 'ERROR',
@@ -42,14 +42,22 @@ const loginUser = async (fuelStationDbConnection, body) => {
     const UsersPassword = await bcrypt.compare(password, user.password)
     if (!UsersPassword) throw new Error("incorrect credentials provided");
 
+    function validate(req) {
+      
+      const schema = Joi.object({
+        email: Joi.string()
+            .min(6)
+            .required()
+            .email(),
+        password: Joi.string()
+            .min(6)
+            .required()
+    });
+  
+      return schema.validate(req);
+  }
     
-    const newUser = await new User({
-      password: UsersPassword,
-      email,
-    }).save();
-    // console.log(newUser)
-
-    return newUser;
+    return body;
 
 
   } catch (error) {

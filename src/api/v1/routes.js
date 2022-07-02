@@ -39,6 +39,42 @@ v1Routes.get("/fuelstation/branch/:branchId",let_verify, branchApi.fetchById);
 v1Routes.delete("/fuelstation/branch/:branchId",let_verify, branchApi.deleteById);
 v1Routes.patch("/fuelstation/branch/:branchId",let_verify, branchApi.updateById);
 
+// Transaction
+const transactionApi = require("./transactions");
+v1Routes.post("/fuelstation/transaction/push",let_verify, transactionApi.transactionSignUp);
+v1Routes.get("/fuelstation/transaction/get",let_verify, transactionApi.fetchAll);
+v1Routes.get("/fuelstation/transaction/:transactionId",let_verify, transactionApi.fetchById);
+v1Routes.delete("/fuelstation/transaction/:transactionId",let_verify, transactionApi.deleteById);
+v1Routes.patch("/fuelstation/transaction/:transactionId",let_verify, transactionApi.updateById);
+
+// PumpDetail
+const pumpDetailApi = require("./pumpDetail");
+v1Routes.post("/fuelstation/pumpdetail/push",let_verify, pumpDetailApi.pumpDetailSignUp);
+v1Routes.get("/fuelstation/pumpdetail/get",let_verify, pumpDetailApi.fetchAll);
+v1Routes.get("/fuelstation/pumpdetail/:pumpdetailId",let_verify, pumpDetailApi.fetchById);
+v1Routes.delete("/fuelstation/pumpdetail/:pumpdetailId",let_verify, pumpDetailApi.deleteById);
+v1Routes.patch("/fuelstation/pumpdetail/:pumpdetailId",let_verify, pumpDetailApi.updateById);
+
+
+
+// Pump
+const pumpApi = require("./pump");
+v1Routes.post("/fuelstation/pump/add",let_verify, pumpApi.pumpSignUp);
+v1Routes.get("/fuelstation/pump",let_verify, pumpApi.fetchAll);
+v1Routes.get("/fuelstation/pump/:pumpId",let_verify, pumpApi.fetchById);
+v1Routes.delete("/fuelstation/pump/:pumpId",let_verify, pumpApi.deleteById);
+v1Routes.patch("/fuelstation/pump/:pumpId",let_verify, pumpApi.updateById);
+
+
+
+// Pump
+const tagApi = require("./tag");
+v1Routes.post("/fuelstation/tag/add",let_verify, tagApi.tagSignUp);
+v1Routes.get("/fuelstation/tag",let_verify, tagApi.fetchAll);
+v1Routes.get("/fuelstation/tag/:tagId",let_verify, tagApi.fetchById);
+v1Routes.delete("/fuelstation/tag/:tagId",let_verify, tagApi.deleteById);
+v1Routes.patch("/fuelstation/tag/:tagId",let_verify, tagApi.updateById);
+
 
 module.exports = v1Routes;
 

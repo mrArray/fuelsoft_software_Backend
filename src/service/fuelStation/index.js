@@ -20,9 +20,12 @@ const createFuelStation = async (adminDbConnection, body) => {
 
     const name = body.name.replace(/ /g, "");
     const email = body.email;
-    const station_address = body.station_address;
+    const company_address = body.company_address;
     const company = body.company;
     const password = body.password;
+    const state =body.state
+    const phone_number=body.phone_number
+    const multistation=body.multistation
    
     const salt = await bcrypt.genSalt(15);
     const hashedPassword = await bcrypt.hash(password, salt);
@@ -45,10 +48,13 @@ const createFuelStation = async (adminDbConnection, body) => {
       {
         name,
         email,
-        station_address,
+        company_address,
         company,
         password: hashedPassword,
-        dbURI: `${process.env.BASE_DB_URI}/${name}`
+        dbURI: `${process.env.BASE_DB_URI}/${name}`,
+        state,
+        phone_number,
+        multistation
       }).save();
     return newFuelStation;
   } catch (error) {
@@ -62,6 +68,7 @@ const loginFuelStations = async (adminDbConnection, body) => {
     const FuelStation = await adminDbConnection.model("FuelStation");
     const password = await body.password;
     const email = body.email;
+    // const name = body.name;
     
     //check if  fuelstation   exist in the database
     const fuelstation = await FuelStation.findOne({ email: email });

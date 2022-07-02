@@ -6,29 +6,43 @@ const fuelStationSchema = new Schema(
     name: {
       type: String,
       unique: true,
-      required: true,
+      required: true
     },
     email: {
       type: String,
       required: true,
       max: 255
     },
-    station_address: {
+    company_address: {
       type: String,
       unique: true,
-      required: true,
+      required: true
     },
     company: {
       type: String,
       max: 255,
-      required: true,
-
+      required: true
     },
     password: {
       type: String,
+      required: true
+    },
+    phone_number: {
+      type: Number,
       required: true,
+      // max: 11
+    },
+    state: {
+      type: String,
+      required: true
+    },
+    multistation: { 
+      type: Boolean,
+      //  enum: ['Yes', 'No'],
+       required: true
 
     },
+
     
     date: {
       type: Date,

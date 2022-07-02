@@ -4,6 +4,8 @@ const helmet = require("helmet");
 const path = require("path");
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
+var multer = require('multer');
+var forms = multer();
 
 const { connectAllDb } = require("./connectionManager");
 
@@ -52,10 +54,12 @@ app.use(log4js.connectLogger(appLogger));
 const cors = require("cors");
 app.use(cors());
 
-// Parsing the body of the http
-app.use(bodyParser.urlencoded({ extended: false }));
+// parse application/json
 app.use(bodyParser.json());
-
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({extended: true}));
+// parse application/form-data
+app.use(forms.array()); 
 
 connectAllDb();
 

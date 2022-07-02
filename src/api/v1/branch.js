@@ -22,16 +22,41 @@ const branchSignUp = async (req, res) => {
   }
 };
 
-
 const fetchAll = async (req, res) => {
   try {
     const dbConnection = getConnection();
     const branches = await branchService.getAllBranches(dbConnection);
-    res.status(200).json(
-      { success: true, 
-       branches: branches,
-      },
-        );
+
+    const station = req.headers.fuel_station;
+    // console.log(dbConnection)
+
+    const custome_branch = [];
+    const branchObj = {}
+    for (let i = 0; i < branches.length; i++) {
+      
+      branchObj.id = branches[i]._id ;
+      branchObj.station = station;
+      branchObj.branch_address = branches[i].branch_address ;
+      branchObj.no_fuel_dispenser = branches[i].no_fuel_dispenser ;
+      branchObj.type_of_fuel = branches[i].type_of_fuel ;
+      branchObj.dispenser_brand = branches[i].dispenser_brand ;
+      branchObj.mainboard_image = branches[i].mainboard_image ;
+      branchObj.no_of_storage_tank = branches[i].no_of_storage_tank ;
+      branchObj.tank_height = branches[i].tank_height ;
+      branchObj.priceboard_brand = branches[i].priceboard_brand ;
+      branchObj.attached_calib_chart = branches[i].attached_calib_chart ;
+      branchObj.createdAt = branches[i].createdAt ;
+      branchObj.updatedAt = branches[i].updatedAt ;
+      // branchObj.__v = branches[i].__v ;
+
+      custome_branch.push({ ...branchObj });
+    }
+
+    res.status(200).json({
+      success:true,
+      branches:custome_branch
+
+    });
 
   } catch (err) {
     res.status(err.statusCode || 500).json({ error: err.message });

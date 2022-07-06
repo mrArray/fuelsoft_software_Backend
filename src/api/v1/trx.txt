@@ -33,13 +33,16 @@ const fetchAll = async (req, res) => {
     const tags = await tagService.getAllTages(dbConnection);
     
     const station = req.headers.fuel_station;
-    // console.log(dbConnection)
+    // console.log(transactiones)
 
 
     //monthly report
     let calculatedResult = new Object()
     // console.log(transactiones)
-    transactiones.forEach((d) => {
+
+    for (let t = 0; t < transactiones.length; t++) {
+      const data = transactiones[t].fields;
+      data.forEach((d) => {
         const date = new Date(d.DateTime);
         calculatedResult[date.toLocaleString('default', { month: 'long' })] = calculatedResult[date.toLocaleString('default', { month: 'long' })]
             ?
@@ -47,7 +50,7 @@ const fetchAll = async (req, res) => {
             :
             1
     })
-
+  }
     const propertyKeys = Object.keys(calculatedResult);
     const propertyValues = Object.values(calculatedResult);
 
@@ -66,8 +69,12 @@ const fetchAll = async (req, res) => {
     // transaction_sum_by_pump
     const transaction_sum_by_pump = [];
     const pumpObj = {}
+
+
+    for (let t = 0; t < transactiones.length; t++) {
+      const data = transactiones[t].fields;
     for (let i = 0; i < pumps.length; i++) {
-      const newArray = transactiones.filter(function (el) {
+      const newArray = data.filter(function (el) {
         return el.Pump === pumps[i].Id
 
       }
@@ -82,13 +89,17 @@ const fetchAll = async (req, res) => {
 
       transaction_sum_by_pump.push({ ...pumpObj });
     }
-
+  }
            // transaction_sum_by_tag
 
     const transaction_sum_by_tag = [];
     const TagObj = {}
+
+    for (let t = 0; t < transactiones.length; t++) {
+      const data = transactiones[t].fields;
     for (let i = 0; i < tags.length; i++) {
-        const newArray = transactiones.filter(function (el) {
+
+        const newArray = data.filter(function (el) {
             return el.Tag === tags[i].Tag
         }
         );
@@ -104,51 +115,71 @@ const fetchAll = async (req, res) => {
 
         transaction_sum_by_tag.push({ ...TagObj });
     }
-
+  }
     //total rest
-    let total_revenue = transactiones.map(o => o.Amount).reduce((a, c) => {
-      return a + c}, 0);
-  let total_volume_sold = transactiones.map(v => v.Volume).reduce((a, c) => {
+
+
+    const statistics = [];
+    const stsObj = {}
+
+    for (let t = 0; t < transactiones.length; t++) {
+      const data = transactiones[t].fields;
+
+      // stsObj.total_revenue = data.map(o => o.Amount).reduce((a, c) => {
+      // return a + c}, 0);
+      stsObj.total_volume_sold = data.map(v => v.Volume).reduce((a, c) => {
       return a + c } , 0);
-  let max_fuel_price = transactiones.map(v => v.Price).reduce(function (a, b) {
+      stsObj.max_fuel_price = data.map(v => v.Price).reduce(function (a, b) {
       return Math.max(a, b); }  , 0);
-  const format_total_revenue = total_revenue.toFixed(2).toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
-  
+      stsObj.total_revenue = data.map(o => o.Amount).reduce((a, c) => {
+        return a + c}, 0).toFixed(2).toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+   
+      statistics.push({...stsObj});
+}
   
 
 
     //modified transactions
+    // const transactionObj = {}
     const custome_transaction = [];
-    const transactionObj = {}
-    for (let i = 0; i < transactiones.length; i++) {
-      
-      transactionObj.id = transactiones[i]._id ;
-      transactionObj.station = station;
-      transactionObj.UserId = transactiones[i].UserId ;
-      transactionObj.Tag = transactiones[i].Tag ;
-      transactionObj.TotalAmount = transactiones[i].TotalAmount ;
-      transactionObj.TotalVolume = transactiones[i].TotalVolume ;
-      transactionObj.Amount = transactiones[i].Amount ;
-      transactionObj.Price = transactiones[i].Price ;
-      transactionObj.TCVolume = transactiones[i].TCVolume ;
-      transactionObj.Volume = transactiones[i].Volume ;
-      transactionObj.Transaction = transactiones[i].Transaction ;
-      transactionObj.Nozzle = transactiones[i].Nozzle ;
-      transactionObj.Pump = transactiones[i].Pump ;
-      transactionObj.DateTime = transactiones[i].DateTime ;
-      transactionObj.DateTimeStart = transactiones[i].DateTimeStart ;
-      transactionObj.createdAt = transactiones[i].createdAt ;
-      transactionObj.updatedAt = transactiones[i].updatedAt ;
+
+    for (let t = 0; t < transactiones.length; t++) {
+      const data = transactiones[t];
+      custome_transaction.push(data);
+
+      // for (let i = 0; i < data.length; i++) {
+
+      // transactionObj.id = data[i]._id ;
+      // transactionObj.station = station;
+      // transactionObj.UserId = data[i].UserId ;
+      // transactionObj.Tag = data[i].Tag ;
+      // transactionObj.TotalAmount = data[i].TotalAmount ;
+      // transactionObj.TotalVolume = data[i].TotalVolume ;
+      // transactionObj.Amount = data[i].Amount ;
+      // transactionObj.Price = data[i].Price ;
+      // transactionObj.TCVolume = data[i].TCVolume ;
+      // transactionObj.Volume = data[i].Volume ;
+      // transactionObj.Transaction = data[i].Transaction ;
+      // transactionObj.Nozzle = data[i].Nozzle ;
+      // transactionObj.Pump = data[i].Pump ;
+      // transactionObj.DateTime = data[i].DateTime ;
+      // transactionObj.DateTimeStart = data[i].DateTimeStart ;
+      // transactionObj.createdAt = data[i].createdAt ;
+      // transactionObj.updatedAt = data[i].updatedAt ;
+
+      // custome_transaction.push({ ...transactionObj });
+
+      // }
       // transactionObj.__v = transactiones[i].__v ;
 
-      custome_transaction.push({ ...transactionObj });
+            // custome_transaction.push({ ...transactionObj });
+
     }
 
     res.status(200).json({
       success: true,
-      total_revenue: format_total_revenue,
-      total_volume_sold: total_volume_sold,
-      max_fuel_price: max_fuel_price,
+      station:station,
+      statistics,
       monthly_transaction_chart: monthsArray,
       transactions: custome_transaction,
       transaction_sum_by_pump: transaction_sum_by_pump,
@@ -238,3 +269,4 @@ const updateById = async (req, res) => {
 
 
 module.exports = { transactionSignUp, fetchAll,fetchById,deleteById,updateById };
+
